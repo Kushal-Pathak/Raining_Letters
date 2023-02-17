@@ -67,9 +67,9 @@ void delay(float f) {
 
 void create_new_rain() {
 	int r = rand() % (w);
-	int ascii = rand() % 27 + 97;
-	char new_rain = (char)ascii;
-	buffer[0][r] = new_rain;
+	int ascii = rand() % 26 + 97;
+	char new_letter = (char)ascii;
+	buffer[0][r] = new_letter;
 }
 
 void row_falls(int r1) {
