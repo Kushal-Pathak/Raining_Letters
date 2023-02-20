@@ -15,7 +15,7 @@ Queue queue;
 
 char buffer[h][w]; // 2d matrix to store all the raining letters at the instant
 
-
+void how_to_play();
 void init_buffer(); // initialize buffer matrix with empty letters i.e. whitespace characters
 void render(); // display the buffer matrix on the screen
 void create_new_rain(); // creates a new letter on the first row of buffer matrix
@@ -28,6 +28,7 @@ char Qdelete(); // deletes a character from queue
 char Qfirst(); //returns the first character of queue
 
 int main() {
+	how_to_play();
 	int score = 0;
 	srand(time(0)); // seeding for creating random number
 	init_buffer(); // initializing the buffer matrix with empty alphabets
@@ -128,6 +129,13 @@ char Qdelete() {
 char Qfirst() {
 	if (queue.value[0]) return queue.value[0];
 	return NULL;
+}
+
+void how_to_play() {
+	cout << "Letters will start raining one by one." << endl;
+	cout << "Try to type all the letters in order before they touch the ground."<<endl;
+	cout << "Press any key to start ";
+	char c = _getch();
 }
 
 
