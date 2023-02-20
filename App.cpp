@@ -1,21 +1,34 @@
 #include <iostream>
-#include <time.h>
+#include <ctime>
+#include <conio.h>
+#include <windows.h>
 #define h 26 // height of the display portion on window
 #define w 63 // width of the display portion on window
 using namespace std;
+
+struct Queue {
+	char value[h] = {};
+	int rear = -1;
+};
+
+Queue queue;
 
 char buffer[h][w]; // 2d matrix to store all the raining letters at the instant
 
 
 void init_buffer(); // initialize buffer matrix with empty letters i.e. whitespace characters
 void render(); // display the buffer matrix on the screen
-void delay(float); // creates certain time delay, takes float value
 void create_new_rain(); // creates a new letter on the first row of buffer matrix
 void row_falls(int); // this function makes the rain on upper row fall down to lower row
 void update_buffer(); // every raining letters are updated by calling row_falls() function
 void clear_cloud(); // clears the first row of buffer matrix
+int Qfull(); // checks if queue is full
+void Qinsert(char); // inserts a character into queue
+char Qdelete(); // deletes a character from queue
+char Qfirst(); //returns the first character of queue
 
 int main() {
+	int score = 0;
 	srand(time(0)); // seeding for creating random number
 	init_buffer(); // initializing the buffer matrix with empty alphabets
 	
@@ -23,7 +36,16 @@ int main() {
 		clear_cloud(); // clearing the first row of buffer matrix
 		create_new_rain(); // creating a random letter on random index on first row of buffer matrix
 		render(); // displaying the buffer matrix
-		delay(1); // creating certain time delay
+		cout << " Score: " << score;
+		if (_kbhit()) {
+			char c = _getch();
+			if (c == Qfirst()) {
+				score++;
+				Qdelete();
+			}
+			cout << " " << c;
+		}
+		Sleep(1000); // creating certain time delay
 		update_buffer(); // updating the buffer in each loop, this helps to make the raining letters fall downwards
 	}
 	return 0;
@@ -59,20 +81,13 @@ void init_buffer() {
 	}
 }
 
-void delay(float f) {
-	// nothing but few nested dummy-for-loops to create time delay
-	for (float i = 0; i < 10000; i++) {
-		for (float j = 0; j < 1000; j++) {
-			for (float k = 0; k < f * 10; k++);
-		}
-	}
-}
-
 void create_new_rain() {
 	int r = rand() % (w);
 	int ascii = rand() % 26 + 97; // generating a random number from 97 to 122
 	char new_letter = (char)ascii; // converting the ascii number into character
 	buffer[0][r] = new_letter; // putting the newly generated character on the first row of buffer matrix
+	if (Qfull()) Qdelete();
+	Qinsert(new_letter);
 }
 
 void row_falls(int r1) {
@@ -87,6 +102,32 @@ void clear_cloud() {
 	for (int j = 0; j < w; j++) {
 		buffer[0][j] = ' ';
 	}
+}
+
+int Qfull() {
+	if (queue.rear == h - 1) return 1;
+	return 0;
+}
+void Qinsert(char c) {
+	if (!Qfull()) {
+		queue.rear++;
+		queue.value[queue.rear] = c;
+	}
+}
+
+char Qdelete() {
+	char c = queue.value[0];
+	queue.value[0] = NULL;
+	for (int i = 0; i < queue.rear; i++) {
+		queue.value[i] = queue.value[i + 1];
+	}
+	queue.rear--;
+	return c;
+}
+
+char Qfirst() {
+	if (queue.value[0]) return queue.value[0];
+	return NULL;
 }
 
 
